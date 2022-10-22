@@ -1,0 +1,13 @@
+{% load static %}
+{% block body %}
+     <h1>{{ object.title }}</h1>
+
+<form method="POST" action = "">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save">
+</form>
+
+{% endblock %}
+
+<h6><a href="{% url 'index'%}">Home</a></h6>

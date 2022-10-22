@@ -1,16 +1,15 @@
 {% load static %}
 
 {% block body %}
-    <h1>Watch List</h1>
+    <h1>User List</h1>
 <h5><a href="{% url 'index'%}">Home</a></h5>
 
    <div>
          <ul>
-        {% for entry in watchlist %}
-    {{object.form}}
+        {% for entry in object_list %}
 
-             {{form}}
             <a href="{% url 'auctionitemdetail' entry.id %}"><li>{{entry}}</li></a>
+
 
         {% endfor %}
         </ul>
@@ -18,3 +17,4 @@
    </div>
 {% endblock %}
 
+<h6><a href="{% url 'index'%}">Home</a></h6>

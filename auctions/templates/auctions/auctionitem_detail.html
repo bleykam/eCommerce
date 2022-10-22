@@ -1,0 +1,36 @@
+{% load static %}
+
+{% block body %}
+     <h1>{{ object.title }}</h1>
+
+
+   <div>
+    <p>
+       <a>  <img src="{{object.image}}" width ="250" height="250"> </a>
+    </p>
+       <p>Description: {{ object.description}}</p>
+       <p>Sale Price: ${{object.price}}</p>
+
+       <p><form method = 'POST'>
+       ${{ object.bid}}   <input class="btn btn-primary" type="submit" value="Place Bid">
+
+   </form></p>
+
+
+       <form action="{% url 'auctionitems_update' object.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <input class="form-control" name="Enter Bid" placeholder="Enter Bid">
+            <input class="btn btn-primary" type="submit" value="Place Bid">
+        </div>
+          </form>
+         <p> {{object.form}}</p>
+        <p>{{ object.form.as_p }} FORM</p>
+
+
+
+<h6><a href="{% url 'index'%}">Home</a></h6>
+
+
+   </div>
+{% endblock %}

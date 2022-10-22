@@ -1,0 +1,19 @@
+{% load static %}
+
+{% block body %}
+    <h1>Watch List</h1>
+<h5><a href="{% url 'index'%}">Home</a></h5>
+
+   <div>
+         <ul>
+        {% for entry in watchlist %}
+    {{object.form}}
+
+             {{form}}
+            <a href="{% url 'auctionitemdetail' entry.id %}"><li>{{entry}}</li></a>
+
+        {% endfor %}
+        </ul>
+
+   </div>
+{% endblock %}

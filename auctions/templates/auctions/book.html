@@ -1,0 +1,31 @@
+{% load static %}
+
+{% block body %}
+     <h1>{{ item.title }}</h1>
+
+
+   <div>
+      Hi, {{ user }}!
+    <p>
+       <a>  <img src="{{item.image}}" width ="250" height="250"> </a>
+    </p>
+       <p>Description: {{ item.description}}</p>
+       <p>Sale Price: ${{item.price}}</p>
+       {{message}}
+      <p><form method = 'POST'>       {% csrf_token %}
+       {{ item.bid}}   <input class="btn btn-primary" type="submit" value="Place Bid">
+   </form></p>
+
+
+         <p> {{item.form}}</p>
+        <p>{{ item.context}} FORM</p>
+
+
+
+    <a class="nav-link" href="{% url 'auctionitems_update' item.id %}">Edit Listings</a>
+
+
+<h6><a href="{% url 'index'%}">Home</a></h6>
+
+   </div>
+{% endblock %}
