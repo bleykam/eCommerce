@@ -1,0 +1,18 @@
+{% load static %}
+
+{% block body %}
+    <h1>{{user}}</h1>
+<h5><a href="{% url 'index'%}">Home</a></h5>
+
+   <div>
+         <ul>
+        {{user.name}}
+
+
+
+        </ul>
+
+   </div>
+{% endblock %}
+
+<h6><a href="{% url 'index'%}">Home</a></h6>

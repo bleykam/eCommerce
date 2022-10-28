@@ -15,13 +15,26 @@ from django.shortcuts import get_object_or_404
 from .forms import WatchListForm
 from .models import User, AuctionItem, Bid
 
+class BidForm(ModelForm):
+    class Meta:
+        model = Bid
+        fields = '__all__'
+
+
 def index(request):
     active_listings = AuctionItem.objects.all()
     context = {'active_listings': active_listings}
 
     return render(request, "auctions/index.html", context)
 
+class UserListView(ListView):
+    model = User
 
+
+class UserDetailView(DetailView):
+    model = User
+
+    template_name = 'auctions/user_detail.html'
 def login_view(request):
     if request.method == "POST":
 
@@ -45,17 +58,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
-
-def update_bid(request):
-    if request.method =="POST":
-
-        Bid = BidForm(request.POST)
-        if BidForm.is_valid():
-            Bid.save()
-
-        obj = AuctionItem.objects.get()
-        obj.save()
-        return render(request, "auctions/auctionitem_details.html", {"Bid": Bid})
 
 
 def register(request):
@@ -86,41 +88,26 @@ def register(request):
 
 
 def categories(request):
-    active_listings = AuctionItem.objects.all()
-    context = {'active_listings': active_listings}
+        stuff=list(AuctionItem.objects.all())
+        items = AuctionItem.objects.all().order_by('category')
+        context = {'items': items, "stuff":stuff}
 
-    return render(request, "auctions/categories.html")
-
-class BidForm(ModelForm):
-    class Meta:
-        model = Bid
-        fields = '__all__'
+        return render(request, "auctions/categories.html", context)
 
 
+def watchlist(request):
+    watchlist=[]
+    if request.method=="POST":
+        watch = request.POST['watch']
 
-class AuctionItemForm(ModelForm):
-    class Meta:
-        model = AuctionItem
-        fields = ['price']
+    items = AuctionItem.objects.all().order_by('category')
+    context = {'items': items}
 
-
-class AuctionItemDetailView(DetailView):
-    model = AuctionItem
-    pk_url_kwarg = 'title'
-    form = BidForm()
-
-
-    def get_success_url(self):
-        return reverse('auctionitemslist')
-
-
+    return render(request, "auctions/categories.html", context)
 
 class AuctionItemListView(ListView):
     model = AuctionItem
     pk_url_kwarg = 'title'
-
-class UserListView(ListView):
-    model = User
 
 
 class AuctionItemCreateView(CreateView):
@@ -153,15 +140,23 @@ def BookDetailView(request, *args, **kwargs):
 
             item.price = request.POST.get('bids')
             item.save()
-            return render(request, "auctions/book.html", context)
+    return render(request, "auctions/book.html", context)
 
 
 
 
 
 
-def WatchList(request):
-    return render(request, 'auctions/watchlist.html', {})
+def Watchlist(request):
+    watch = []
+    if request.method=="POST":
+        item = AuctionItem.objects.get(pk=pk)
+        if item.is_valid():
+            watch.append(item)
+    return render(request, "auctions/watchlist.html")
 
-    def get_success_url(self):
-        return reverse('book')
+
+class AuctionItemDetailView(DetailView):
+    model = AuctionItem
+    pk_url_kwarg = 'title'
+    form = BidForm()

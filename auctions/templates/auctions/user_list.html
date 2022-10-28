@@ -2,19 +2,14 @@
 
 {% block body %}
     <h1>User List</h1>
-<h5><a href="{% url 'index'%}">Home</a></h5>
 
-   <div>
-         <ul>
-        {% for entry in object_list %}
-
-            <a href="{% url 'auctionitemdetail' entry.id %}"><li>{{entry}}</li></a>
+ <ul>
+        {% for user in object_list %}
+            {{user.name}}
 
 
         {% endfor %}
         </ul>
 
-   </div>
-{% endblock %}
-
 <h6><a href="{% url 'index'%}">Home</a></h6>
+{% endblock %}

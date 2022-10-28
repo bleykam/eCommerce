@@ -6,10 +6,8 @@
 
    <div>
          <ul>
-        {% for entry in watchlist %}
-    {{object.form}}
-
-             {{form}}
+        {% for entry in watch %}
+            {{entry}}
             <a href="{% url 'auctionitemdetail' entry.id %}"><li>{{entry}}</li></a>
 
         {% endfor %}

@@ -5,7 +5,7 @@
 
 
    <div>
-      Hi, {{ user }}!
+      Hi, {{ user}}!
     <p>
        <a>  <img src="{{item.image}}" width ="250" height="250"> </a>
     </p>
@@ -18,14 +18,17 @@
 
 
          <p> {{item.form}}</p>
-        <p>{{ item.context}} FORM</p>
+           <p> Category:  {{item.get_category_display}}</p>
 
 
 
-    <a class="nav-link" href="{% url 'auctionitems_update' item.id %}">Edit Listings</a>
+    <a class="nav-link" href="{% url 'auctionitems_update' item.id %}">Edit</a>
 
+       <form method="POST">
+       <p>  <button type="button" >Watch</button></p>
+    </form>
 
-<h6><a href="{% url 'index'%}">Home</a></h6>
+<h5><a href="{% url 'index'%}">Home</a></h5>
 
    </div>
 {% endblock %}

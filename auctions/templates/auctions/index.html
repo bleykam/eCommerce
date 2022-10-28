@@ -8,6 +8,7 @@
         {% for entry in active_listings %}
             <a href="{% url 'auctionitemdetail' entry.id %}"><li>{{entry.title}}</li></a>
               {{entry.description}}
+              <p> {{entry.get_category_display}}</p>
 
         {% endfor %}
         </ul>

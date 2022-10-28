@@ -1,16 +1,23 @@
+{% extends "auctions/layout.html" %}
 
 {% block body %}
     <h2>Categories</h2>
 
-
    <div>
-         <ul>
 
-        {% for entry in active_listings %}
-            <a href="{% url 'auctionitemdetail' entry.id %}"><li>{{entry.title}}</li></a>
-              {{entry.description}}
+    {% regroup items by get_category_display as cat_list %}
+<ul>
+    {% for title in cat_list %}
+        <li>{{title.grouper}}</li>
+<ul>
+    {% for x in title.list %}
+        <li>{{ x.title }} : ${{ x.price}}</li>
         {% endfor %}
-        </ul>
+    </ul>
+
+{% endfor %}
+</ul>
 
    </div>
 {% endblock %}
+
