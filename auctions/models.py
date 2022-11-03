@@ -1,22 +1,16 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 from djmoney.models.fields import MoneyField
-from django.forms import ModelForm
-from django.contrib.auth.models import User
+from django.forms import ModelForm, forms, HiddenInput
 from django.forms import MultiWidget, Textarea
-
 from commerce import settings
 
 
 class User(AbstractUser):
     pass
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    watchlist = models.TextField(max_length=500, blank=True)
-    bids = models.CharField(max_length=30, blank=True)
-
 
 class Comment(models.Model):
+    user = models.ForeignKey( settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_for_the_comment')
     comments = models.CharField(max_length=100)
 
     def __str__(self):
@@ -28,39 +22,14 @@ class CommentForm(ModelForm):
         fields = ['comments']
 
 
+class WatchList(models.Model):
+    choices = [(True, 'Watching'), (False, 'Watch')]
 
-class Bid(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    bids = models.DecimalField(max_digits=12, decimal_places=2)
-
-
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_for_the_watchlist')
+    auctions = models.ManyToManyField('AuctionItem', related_name='auctions_in_the_watchlist', blank=True)
+    watched = models.BooleanField(default=False)
     def __str__(self):
-        return f" Current Bid: ${self.bids}"
-
-class BidForm(ModelForm):
-    class Meta:
-        model = Bid
-        fields = ['bids']
-        widgets = {
-            'bids': Textarea(attrs={'cols': 20, 'rows': 1}),
-        }
-
-class Watch(models.Model):
-    watched =  models.BooleanField(default=False)
-
-
-    def __str__(self):
-        return f" Current Bid: ${self.bids}"
-
-class BidForm(ModelForm):
-    class Meta:
-        model = Bid
-        fields = ['bids']
-        widgets = {
-            'bids': Textarea(attrs={'cols': 20, 'rows': 1}),
-        }
-
-
+        return f": ${self.auctions.name}"
 
 
 class AuctionItem(models.Model):
@@ -80,13 +49,32 @@ class AuctionItem(models.Model):
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
     form = CommentForm()
     bid = BidForm()
+    bidcount = models.IntegerField(default=0)
 
-
-    def categories_verbose(self):
-        return f" verbose: {self.get_category_display}"
     def __str__(self):
         return f" Title: {self.title} " \
+               f" price: {self.price} "
 
 
 
+class Bid(models.Model):
+    user = models.ForeignKey( settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=False)
+    bids = models.DecimalField(max_digits=12, decimal_places=2)
+    item = models.ForeignKey('AuctionItem', on_delete=models.CASCADE, null=True, blank=False, related_name="item_bidding_on")
 
+    def __str__(self):
+        return f" Current Bid: ${self.bids}"\
+                f" user: {self.user}"\
+                f" item: {self.item}"
+
+class BidForm(ModelForm):
+    class Meta:
+        model = Bid
+        fields = ['bids', 'user', 'item']
+
+        widgets = {
+            'bids': Textarea(attrs={'cols': 20, 'rows': 1}),
+            'user': HiddenInput(),
+
+
+         }

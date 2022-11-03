@@ -9,9 +9,10 @@
 <ul>
     {% for title in cat_list %}
         <li>{{title.grouper}}</li>
+
 <ul>
-    {% for x in title.list %}
-        <li>{{ x.title }} : ${{ x.price}}</li>
+    {% for item in title.list %}
+         <a href="{% url 'auctionitemdetail' item.id %}"><li>{{ item.title }} : ${{ item.price}}</a>
         {% endfor %}
     </ul>
 

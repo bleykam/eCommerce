@@ -5,11 +5,14 @@
 
  <ul>
         {% for user in object_list %}
-            {{user.name}}
+     <li> {{user.username}}</li>
+     <li> {{user.email}}</li>
 
+     <li> {{user.bid_set.all}}</li>
+     <li>{{bid}}</li>
 
         {% endfor %}
-        </ul>
+ </ul>
 
 <h6><a href="{% url 'index'%}">Home</a></h6>
 {% endblock %}

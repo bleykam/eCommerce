@@ -11,22 +11,20 @@
     </p>
        <p>Description: {{ item.description}}</p>
        <p>Sale Price: ${{item.price}}</p>
-       {{message}}
-      <p><form method = 'POST'>       {% csrf_token %}
-       {{ item.bid}}   <input class="btn btn-primary" type="submit" value="Place Bid">
+      <p><form method = 'POST' action=".">       {% csrf_token %}
+       {{ item.bid}} <input class="btn btn-primary" type="submit" name = "placebid" value="Place Bid">
+
+       <p>Number of Bids: {{item.bidcount}}</p>
    </form></p>
 
-
          <p> {{item.form}}</p>
-           <p> Category:  {{item.get_category_display}}</p>
-
-
 
     <a class="nav-link" href="{% url 'auctionitems_update' item.id %}">Edit</a>
 
-       <form method="POST">
-       <p>  <button type="button" >Watch</button></p>
-    </form>
+ <p><form  method="POST" action="{% url 'auctionitemdetail' item.id %}">
+        {% csrf_token %}
+       <button name ="watch" type="submit">Watch</button>
+          </form></p>
 
 <h5><a href="{% url 'index'%}">Home</a></h5>
 

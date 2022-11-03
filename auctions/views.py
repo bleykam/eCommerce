@@ -1,40 +1,56 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http.request import HttpRequest
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.views.generic import DetailView
-from django.views.generic.list import ListView, View
+from django.views.generic import DetailView, ListView, View
 from django.views import generic
 from django.forms import ModelForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView, ProcessFormView
 from django.shortcuts import get_object_or_404
-from .forms import WatchListForm
-from .models import User, AuctionItem, Bid
 
-class BidForm(ModelForm):
-    class Meta:
-        model = Bid
-        fields = '__all__'
+from .models import User, AuctionItem, Bid, BidForm, WatchList
 
-
+User = get_user_model()
 def index(request):
     active_listings = AuctionItem.objects.all()
     context = {'active_listings': active_listings}
+    print(("I \u2764 Django") )
 
     return render(request, "auctions/index.html", context)
 
 class UserListView(ListView):
     model = User
+    fields = '__all__'
 
 
-class UserDetailView(DetailView):
-    model = User
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['bid'] = str(User.bid_set)
+        return context
 
+
+@login_required()
+def UserDetailView(request):
     template_name = 'auctions/user_detail.html'
+    user = request.user
+    person = User.objects.all()
+    print(user)
+    if user.id is None:
+        return HttpResponseRedirect(reverse('login'))
+    context = {"user":user, "person":person}
+    return render(request, "auctions/user_detail.html", context)
+
+
+
+
 def login_view(request):
     if request.method == "POST":
 
@@ -94,20 +110,26 @@ def categories(request):
 
         return render(request, "auctions/categories.html", context)
 
+def watchlist(request, *args, **kwargs):
+    item= get_object_or_404(AuctionItem, pk=kwargs['title'])
+    context = {'item': item}
 
-def watchlist(request):
-    watchlist=[]
     if request.method=="POST":
-        watch = request.POST['watch']
 
-    items = AuctionItem.objects.all().order_by('category')
-    context = {'items': items}
+        print(item, "item")
+        print(request.META.get('HTTP_REFERER'))
 
-    return render(request, "auctions/categories.html", context)
+
+        return HttpResponse('success')
+
 
 class AuctionItemListView(ListView):
     model = AuctionItem
     pk_url_kwarg = 'title'
+
+class WatchListView(ListView):
+    model = WatchList
+    fields = '__all__'
 
 
 class AuctionItemCreateView(CreateView):
@@ -120,7 +142,6 @@ class AuctionItemCreateView(CreateView):
 
 class AuctionItemUpdateView(UpdateView):
     model = AuctionItem
-    form = BidForm
     fields = '__all__'
 
     def get_success_url(self):
@@ -130,30 +151,25 @@ class AuctionItemUpdateView(UpdateView):
 
 def BookDetailView(request, *args, **kwargs):
     item= get_object_or_404(AuctionItem, pk=kwargs['title'])
+    item.bid = BidForm(initial={'user': request.user})
     context = {'item': item}
-
-    if request.method == 'POST':
+    if 'placebid' in request.POST:
         form = BidForm(request.POST)
+        print(form)
         if float(request.POST.get('bids')) > int(item.price):
             if form.is_valid():
+                form.user = request.user
+                print("USER =:", form.user)
+                bids = form.cleaned_data['bids']
                 form.save()
-
+                print("SAVED", form.user)
             item.price = request.POST.get('bids')
+            item.bidcount +=1
             item.save()
+
+
     return render(request, "auctions/book.html", context)
 
-
-
-
-
-
-def Watchlist(request):
-    watch = []
-    if request.method=="POST":
-        item = AuctionItem.objects.get(pk=pk)
-        if item.is_valid():
-            watch.append(item)
-    return render(request, "auctions/watchlist.html")
 
 
 class AuctionItemDetailView(DetailView):
