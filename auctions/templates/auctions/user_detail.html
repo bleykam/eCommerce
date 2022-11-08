@@ -1,19 +1,39 @@
 {% load static %}
 
 {% block body %}
-    <h1>{{user}}</h1>
 <h5><a href="{% url 'index'%}">Home</a></h5>
+    <h1>{{user}}'s Profile</h1>
+
+<p>User Name:  {{username}}</p>
+<p>User Email:  {{user.email}}</p>
+
 
    <div>
-         <ul>
-        {{user.name}}
-         {{user.bid}}
+       <p>
+           <h4> BIDS</h4>
+           <ul>{% for e in bid %}
+               <li> <a href="{% url 'auctionitemdetail' e.item.id %}">{{e}}</a></li>
+               {% endfor%}</ul>
+       </p>
+       <p>
+       <h4>COMMENTS</h4>
+           <ul>{% for remark in comment %}
+               <li><a href="{% url 'auctionitemdetail' remark.item.id %}">{{remark.item.title}}:{{remark}}</a></li>
+               {% endfor%}</ul>
+       </p>
 
+       </p>
+       <p>
+       <h4>WATCHLIST</h4>
+           <ul>{% for auction in watching %}
+               <li> <a href="{% url 'auctionitemdetail' auction.id %}">{{auction.item}}</a></li>
+               {% endfor%}</ul>
+       </p>
 
-
-        </ul>
-
+       <h4>MY AUCTIONS</h4>
+           <ul>{% for a in listings %}
+               <li><a href="{% url 'auctionitemdetail' a.id %}">{{a.title}}</a></li>
+               {% endfor%}</ul>
+       </p>
    </div>
 {% endblock %}
-
-<h6><a href="{% url 'index'%}">Home</a></h6>

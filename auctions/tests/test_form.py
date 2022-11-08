@@ -32,5 +32,8 @@ class YourTestClass(TestCase):
         self.assertEqual(1 + 1, 2)
 
     def test_renew_form_date_field_help_text(self):
+        first_type = type(lst[0])
+        for item in lst:
+            assert type(item) == first_type
         form = BidForm()
-        self.assertEqual(form.fields['user'], self.client.response.context['user']))
+        self.assertEqual(form.fields['user'], self.client.response.context['user'])

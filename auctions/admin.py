@@ -2,12 +2,15 @@ from django.contrib import admin
 
 from .models import *
 
-
+class BidInline(admin.TabularInline):
+    model = Bid
 class AuctionItemAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "description", "price", "category", "bid")
+    inlines = [BidInline]
+    list_display = ("id", "title", "description", "price", "category", "user")
 
 class BidAdmin(admin.ModelAdmin):
-    list_display = ("id", "bids", "user_id")
+
+    list_display = ("id", "bids", "user", "item")
 
 
 fieldsets = (

@@ -1,22 +1,17 @@
 {% load static %}
 
 {% block body %}
-    <h1>Watch List</h1>
-<h5><a href="{% url 'index'%}">Home</a></h5>
+    <h1>Watch List For {{user}}</h1>
 
+<h5><a href="{% url 'index'%}">Home</a></h5>
    <div>
          <ul>
         {% for entry in object_list %}
-
-            <li>{{entry.user}}</li>
-           <li>{{entry}}</li>
-           <li> {{entry.watched}}</li>
-
-            <a href="{% url 'auctionitemdetail' entry.id %}"><li>{{entry.id}}</li></a>
-
+             {% if user == entry.user %}
+                 <li>{{entry.item}}</li>
+             {% endif %}
         {% endfor %}
         </ul>
-
    </div>
 {% endblock %}
 

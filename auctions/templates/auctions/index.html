@@ -1,16 +1,15 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-
-   <div>
-         <ul>
-        {% for entry in active_listings %}
-          <a href="{% url 'auctionitemdetail' entry.id %}"><li>{{entry.title}}:    ${{entry.price}}</a>
-             <p>{{entry.description}}</p>
-
-        {% endfor %}
-        </ul>
-
+    <h2>FEATURED LISTING</h2>
+      {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+   <div class="center">
+       <ul>
+           <a href="{% url 'auctionitemdetail' feature.id %}"><li>{{feature.title}}:    ${{feature.price}}</a>
+           <p><a>  <img src="{{feature.image}}" alt="picture unavailable" width="250" height="250"> </a></p>
+           <li>{{feature.description}}</li>
+       </ul>
    </div>
 {% endblock %}
