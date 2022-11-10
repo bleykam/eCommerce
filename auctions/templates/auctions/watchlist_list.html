@@ -8,7 +8,7 @@
          <ul>
         {% for entry in object_list %}
              {% if user == entry.user %}
-                 <li>{{entry.item}}</li>
+             <a href="{% url 'auctionitemdetail' entry.item.id %}"><li>{{entry.item}}</li></a>
              {% endif %}
         {% endfor %}
         </ul>

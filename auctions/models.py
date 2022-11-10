@@ -19,7 +19,6 @@ class WatchList(models.Model):
         return f"{self.item}" \
                 f"{self.user}"
 
-
 class AuctionItem(models.Model):
     CATEGORY_CHOICES = [
         ('', ''),
@@ -39,29 +38,21 @@ class AuctionItem(models.Model):
     comment = models.CharField(max_length=1000, null=True, blank=True)
     bidcount = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
-
-
-
     def __str__(self):
         return f" {self.title} - " \
                f" ${self.price} "
-
-
 
 class Bid(models.Model):
     user = models.ForeignKey( settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=False)
     bids = models.DecimalField(max_digits=12, decimal_places=2)
     item = models.ForeignKey('AuctionItem', on_delete=models.CASCADE, null=True, blank=False, related_name="item_bidding_on")
-
     def __str__(self):
-        return f"{self.item}"\
+        return f"{self.item}"
 
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_for_the_comment')
     item = models.ForeignKey('AuctionItem', on_delete=models.CASCADE, null=True, blank=False, related_name="item_commenting_on")
     comments = models.CharField(max_length=1000)
-
-
     def __str__(self):
-        return f"{self.comments}   "  "\n"
+        return f"{self.comments} "
         f"User: {self.user}"

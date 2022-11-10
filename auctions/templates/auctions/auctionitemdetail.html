@@ -14,6 +14,7 @@
         {% endfor %}
         {% endif %}
        </p>
+       <div>{% if item.active %}
 
     <p>
        <a>  <img src="{{item.image}}" width ="250" height="250"> </a>
@@ -22,8 +23,6 @@
        <p>Sale Price: ${{item.price}}</p>
 
       <p><form method = 'POST' action=".">       {% csrf_token %}
-
-        <div>{{ message }}</div>
        Bid: <input type="number" step="0.01" min="0" type="submit" name = "placebid" value="Place Bid" required>
        <button type="submit">Bid</button>
 
@@ -38,7 +37,6 @@
  <p><form  method="POST" action="{% url 'auctionitemdetail' item.id %}">
         {% csrf_token %}
        <button name ="watch" type="submit">Watch</button>
-       {{message}}
           </form></p>
 
 <h3>COMMENTS</h3>
@@ -46,11 +44,31 @@
                 <li>{{remark}}</li>
             {% endfor %}</ul></p>
     <p>
-        {{list}}
+
     </p>
        {% if item.user == user %}
         <p><a type = "button" class="button" href="{% url 'auctionitems_update' item.id %}">Edit</a></p>
         {% endif %}
+    {% endif %}
+   </div>
+   <div> {% if not item.active %}
+       <h1>AUCTION CLOSED!</h1>
+           <p>
+       <a>  <img src="{{item.image}}" width ="250" height="250"> </a>
+    </p>
+       <p>Description: {{ item.description}}</p>
+
+       <p>Winning Bidder:  {{highestBid.user}}</p>
+       <p>Winning Bid: ${{item.price}}</p>
+
+    </p>
+       {% if item.user == user %}
+        <p><a type = "button" class="button" href="{% url 'auctionitems_update' item.id %}">Edit</a></p>
+        {% endif %}
+
+{% endif %}
+
+
 
    </div>
 {% endblock %}
